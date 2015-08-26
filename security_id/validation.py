@@ -1,4 +1,3 @@
-__author__ = 'Philip Martin'
 
 import string
 from abc import ABCMeta,abstractmethod
@@ -15,14 +14,12 @@ CHAR_MAP = dict(chain(_num_map,_char_map))
 
 # SEDOL character and weight map(no vowels)
 SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set(['A','E','I','O','U'])}
-SEDOL_WEIGHTS = (1,3,1,7,3,9,1)
 
 CUSIP_FIRST_CHAR = set((i for i,j in CINS_CODES))
 CUSIP_FIRST_CHAR.update((str(i) for i in range(0,10)))
 
 class SecurityId(metaclass=ABCMeta):
     """
-
     A financial security id that can be validated.
 
     Attributes:
@@ -77,6 +74,9 @@ class SecurityId(metaclass=ABCMeta):
 
         sid += str(self.calculate_checksum(sid))
         return sid
+
+    #def __str__(self):
+    #    return "<security_id %s>" % self.__class__.__name__
 
     def _id_check(self,sid):
         if sid is None or sid is "" or (isinstance(sid,float) and isnan(sid)):
