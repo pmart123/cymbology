@@ -27,13 +27,12 @@ class SecurityId(metaclass=ABCMeta):
         MAX_LEN : maximum length of security id with check digit.
 
     Note:
-        "sid" input variable implies security id with check digit appended.
-        "sid_" input variable implies security id w/o check digit.
+        "sid" input variable name implies security id with check digit appended.
+        "sid_" input variable name implies security id w/o check digit.
     """
 
     MIN_LEN = 1
     MAX_LEN = None
-    MAPPER = None
 
     def validate(self,sid):
         """ True if sid is valid security id, else raises IdError Exception."""
@@ -57,43 +56,42 @@ class SecurityId(metaclass=ABCMeta):
         except IdError:
             return False
 
-    def calculate_checksum(self,sid):
+    def calculate_checksum(self,sid_):
         """ calculate the check digit."""
 
-        self._id_check(sid)
-        return self._calculate_checksum(sid)
+        self._id_check(sid_)
+
+        try:
+            return self._calculate_checksum(sid_)
+        except KeyError:
+             raise CharacterError
 
     @abstractmethod
-    def _calculate_checksum(self,sid):
+    def _calculate_checksum(self,sid_):
         NotImplementedError
 
-    def append_checksum(self,sid):
+    def append_checksum(self,sid_):
         """
         calculate and append check sum digit to security id.
         """
 
-        sid += str(self.calculate_checksum(sid))
-        return sid
+        sid_ += str(self.calculate_checksum(sid_))
+        return sid_
 
-    #def __str__(self):
-    #    return "<security_id %s>" % self.__class__.__name__
+    def __str__(self):
+        return "<security_id %s>" % self.__class__.__name__
 
-    def _id_check(self,sid):
-        if sid is None or sid is "" or (isinstance(sid,float) and isnan(sid)):
+    def _id_check(self,sid_):
+        if sid_ is None or sid_ is "" or (isinstance(sid_,float) and isnan(sid_)):
             raise NullError
 
-        if not (self.MIN_LEN - 1) <= len(sid) <= (self.MAX_LEN - 1):
+        if not (self.MIN_LEN - 1) <= len(sid_) <= (self.MAX_LEN - 1):
             raise LengthError
 
-    def _iter_char(self,sid):
-        try:
-            return self.char2val(sid)
-        except KeyError:
-            raise CharacterError
+        self._additional_checks(sid_)
 
-    @abstractmethod
-    def char2val(self,sid):
-        NotImplementedError
+    def _additional_checks(self,sid_):
+        pass
 
 class Sedol(SecurityId):
     """
@@ -108,13 +106,10 @@ class Sedol(SecurityId):
     WEIGHTS = (1,3,1,7,3,9,1)
     _REV_WEIGHT = WEIGHTS[:-1][::-1]
 
-    def _calculate_checksum(self,sid):
-        sum_ = self._iter_char(sid)
+    def _calculate_checksum(self,sid_):
+        sum_ = sum((SEDOL_CHAR_MAP[c]*w for (c,w) in zip(sid_[::-1],self._REV_WEIGHT)))
         check_sum = (10 - sum_ % 10) % 10
         return check_sum
-
-    def char2val(self,sid):
-        return sum((SEDOL_CHAR_MAP[c]*w for (c,w) in zip(sid[::-1],self._REV_WEIGHT)))
 
 class Cusip(SecurityId):
     """
@@ -127,16 +122,12 @@ class Cusip(SecurityId):
 
     MAX_LEN = 9
 
-    def _calculate_checksum(self,sid):
-        if sid[0] not in CUSIP_FIRST_CHAR:
+    def _calculate_checksum(self,sid_):
+        return _luhnify((CHAR_MAP[c] for c in reversed(sid_)))
+
+    def _additional_checks(self,sid_):
+        if sid_[0] not in CUSIP_FIRST_CHAR:
             raise CountryCodeError
-
-        vals = self._iter_char(sid)
-
-        return _luhn_checksum(vals)
-
-    def char2val(self,sid):
-        return list((CHAR_MAP[c] for c in sid))
 
 class Isin(SecurityId):
     """
@@ -151,17 +142,24 @@ class Isin(SecurityId):
     MIN_LEN = 12
     MAX_LEN = 12
 
-    def _calculate_checksum(self,sid):
+    def _additional_checks(self,sid_):
         # first two letters are two character ISO country code
-        if sid[:2] not in COUNTRY_CODES:
+        if sid_[:2] not in COUNTRY_CODES:
             raise CountryCodeError
 
-        vals = self._iter_char(sid)
+    def _calculate_checksum(self,sid_):
+        return _luhnify(self._iter(sid_))
 
-        return _luhn_checksum(vals)
+    def _iter(self,sid_):
+        for c in reversed(sid_):
+            val = CHAR_MAP[c]
 
-    def char2val(self,sid):
-        return list(chain.from_iterable(_mydivmod(CHAR_MAP[c]) for c in sid))
+            if val < 10:
+                yield val
+            else:
+                #yield from (val % 10, val // 10) #py3.4 support only
+                yield val % 10
+                yield val // 10
 
 def val_check_digit(sid):
     """ checks if check digit can convert to integer"""
@@ -171,26 +169,25 @@ def val_check_digit(sid):
     except ValueError:
         raise CheckDigitError
 
-def _luhn_checksum(vals):
-    """ calculate the luhn check sum."""
+def luhn_modn_checksum(sid):
+    """ calculate the luhn modolo n check sum."""
 
-    even = (x*2 for x in vals[::-2])
-    odd_sum = luhn_sum(vals[-2::-2])
-    even_sum = luhn_sum(even)
-    sum_ = even_sum + odd_sum
+    gen = (CHAR_MAP[c] for c in reversed(sid))
+    return _luhnify(gen)
+
+def _luhnify(gen):
+    """ calculates luhn sum given a generator of integers in reverse order."""
+
+    sum_ = 0
+
+    for index,val in enumerate(gen,1):
+        if index % 2:
+            val *= 2
+            sum_ += val // 10 + val % 10
+        else:
+            sum_ += val
 
     return (10 - sum_ % 10) % 10
-
-def luhn_sum(vals):
-    """ modular sum for luhn check sum."""
-
-    return sum((x % 10 + (x // 10) for x in vals))
-
-def _mydivmod(x):
-     if x < 10:
-         return (x,)
-     else:
-         return divmod(x,10)
 
 class IdError(Exception): pass
 class NullError(IdError): pass
