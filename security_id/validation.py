@@ -37,8 +37,7 @@ class SecurityId(metaclass=ABCMeta):
     def validate(self,sid):
         """ True if sid is valid security id, else raises IdError Exception."""
 
-        if sid is None or sid is "" or (isinstance(sid,float) and isnan(sid)):
-            raise NullError
+        self._id_check(sid)
 
         check_sum = self.calculate_checksum(sid[:(self.MAX_LEN - 1)])
         check_digit = val_check_digit(sid)
@@ -59,7 +58,7 @@ class SecurityId(metaclass=ABCMeta):
     def calculate_checksum(self,sid_):
         """ calculate the check digit."""
 
-        self._id_check(sid_)
+        self._id_check(sid_,offset=1)
 
         try:
             return self._calculate_checksum(sid_)
@@ -81,11 +80,11 @@ class SecurityId(metaclass=ABCMeta):
     def __str__(self):
         return "<security_id %s>" % self.__class__.__name__
 
-    def _id_check(self,sid_):
+    def _id_check(self,sid_,offset=0):
         if sid_ is None or sid_ is "" or (isinstance(sid_,float) and isnan(sid_)):
             raise NullError
 
-        if not (self.MIN_LEN - 1) <= len(sid_) <= (self.MAX_LEN - 1):
+        if not (self.MIN_LEN - offset) <= len(sid_) <= (self.MAX_LEN - offset):
             raise LengthError
 
         self._additional_checks(sid_)
