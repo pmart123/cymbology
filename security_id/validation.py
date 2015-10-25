@@ -4,7 +4,10 @@ from abc import ABCMeta,abstractmethod
 from itertools import chain
 from math import isnan
 
-from security_id.codes import CINS_CODES,COUNTRY_CODES
+from security_id.codes import CINS_CODES, COUNTRY_CODES
+from security_id.exceptions import (IdError, NullError, CheckDigitError,
+                                    LengthError, CountryCodeError,
+                                    CharacterError, CheckSumError)
 
 _num_map = zip((str(i) for i in range(0,10)),range(0,10))
 _char_map = zip(string.ascii_uppercase,range(10,36))
@@ -188,10 +191,3 @@ def _luhnify(gen):
 
     return (10 - sum_ % 10) % 10
 
-class IdError(Exception): pass
-class NullError(IdError): pass
-class CheckDigitError(IdError): pass
-class LengthError(IdError): pass
-class CountryCodeError(IdError): pass
-class CharacterError(IdError): pass
-class CheckSumError(IdError): pass
