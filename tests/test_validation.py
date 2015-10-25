@@ -6,32 +6,34 @@ import pytest
 from security_id.validation import Cusip, Isin, Sedol, val_check_digit, luhn_modn_checksum
 from security_id.exceptions import CheckDigitError, CheckSumError, CountryCodeError, LengthError, NullError
 
-xfail = pytest.mark.xfail
-
+#xfail = pytest.mark.xfail
 
 # --------------------------------------------------------------
 # SecurityId tests
 # --------------------------------------------------------------
 class TestEmptyInput(TestCase):
 
+    def setUp(self):
+        self.validators = [Sedol(),Cusip(),Isin()]
+
     def test_none_input(self):
         # test None input
-        self.assertRaises(NullError,Sedol().validate,None)
-        self.assertRaises(NullError,Isin().validate,None)
-        self.assertRaises(NullError,Cusip().validate,None)
+        for val in self.validators:
+            with self.subTest(val=val):
+                self.assertRaises(NullError,val.validate,None)
 
-    def test_empty_string(self):
-        # test empty string input
-        self.assertRaises(NullError,Sedol().validate,"")
-        self.assertRaises(NullError,Isin().validate,"")
-        self.assertRaises(NullError,Cusip().validate,"")
+    def test_empty_string_input(self):
+        for val in self.validators:
+            with self.subTest(val=val):
+                self.assertRaises(NullError,val.validate,"")
 
-# empty string( or unittest case?)
 # @pytest.mark.parametrize('obj',[(Sedol()),(Isin()),(Cusip())])
 # def test_empty_string(obj):
 #     with pytest.raises(NullError):
 #         assert obj.validate("")
-
+#
+#     with pytest.raises(NullError):
+#         assert obj.validate(None)
 
 @pytest.mark.parametrize('input,expected',
                          [('30303M102',True),
@@ -90,15 +92,16 @@ def test_char_sedol(input):
 def test_numeric_isin(input):
     assert Isin().validate(input) == True
 
+
 @pytest.mark.parametrize('input',['US30231G1022','CNE1000007Q1','US66987V1098'])
 def test_char_isin(input):
     assert Isin().validate(input) == True
 
 
 def test_isin_country_code_error():
-    # country code failure
     with pytest.raises(CountryCodeError):
         Isin().validate('XA0109067019')
+
 
 # --------------------------------------------------------------
 # CUSIP tests
