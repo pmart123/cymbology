@@ -1,0 +1,8 @@
+*.pyc
+*.egg*
+.coverage
+.tox
+venv
+_build
+build/
+.idea/
