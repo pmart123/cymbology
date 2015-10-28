@@ -22,15 +22,19 @@ CUSIP_FIRST_CHAR = set((i for i,j in CINS_CODES))
 CUSIP_FIRST_CHAR.update((str(i) for i in range(0,10)))
 
 class SecurityId(metaclass=ABCMeta):
-    """
-    A financial security id that can be validated.
+    """A financial security id that can be validated.
+
+    Parameters
+    ----------
+    sid : str or None
+        security id string
 
     Attributes
     ----------
-        MIN_LEN : int
-            minimum length of security id with check digit.
-        MAX_LEN : int
-            maximum length of security id with check digit.
+    MIN_LEN : int
+        minimum length of security id with check digit.
+    MAX_LEN : int
+        maximum length of security id with check digit.
 
     Notes
     -----
