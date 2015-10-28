@@ -4,9 +4,8 @@ from unittest import TestCase
 import pytest
 
 from security_id.validation import Cusip, Isin, Sedol, val_check_digit, luhn_modn_checksum
-from security_id.exceptions import CheckDigitError, CheckSumError, CountryCodeError, LengthError, NullError
-
-#xfail = pytest.mark.xfail
+from security_id.exceptions import (CharacterError, CheckDigitError, CheckSumError,
+                                    CountryCodeError, LengthError, NullError)
 
 # --------------------------------------------------------------
 # SecurityId tests
@@ -30,17 +29,27 @@ class TestEmptyInput(TestCase):
 # @pytest.mark.parametrize('obj',[(Sedol()),(Isin()),(Cusip())])
 # def test_empty_string(obj):
 #     with pytest.raises(NullError):
-#         assert obj.validate("")
+#         obj.validate("")
 #
 #     with pytest.raises(NullError):
-#         assert obj.validate(None)
+#         obj.validate(None)
 
-@pytest.mark.parametrize('input,expected',
-                         [('30303M102',True),
-                          ('30303M101',False)])
-def test_is_valid(input,expected):
-    assert Cusip().is_valid(input) == expected
+class TestValid(TestCase):
+    def setUp(self):
+        self.validators = [Cusip()]
+        self.validate_ids = ['30303M102']
+        self.invalid_ids = ['30303M101']
 
+    def test_valid(self):
+        for val in zip(self.validators,self.validate_ids):
+            with self.subTest(val=val):
+                self.assertTrue(val[0].is_valid(val[1]))
+
+# @pytest.mark.parametrize('obj,input,expected',
+#                          [(Cusip(),'30303M102',True),
+#                           (Cusip(),'30303M101',False)])
+# def test_is_valid(obj,input,expected):
+#     assert obj.is_valid(input) == expected
 
 @pytest.mark.parametrize('obj,input,expected',
                          [(Cusip(),'03783310','037833100'),
@@ -53,15 +62,19 @@ def test_append_checksum(obj,input,expected):
                          [(Sedol(),'0263494567'),(Isin(),'US03783310055'),
                            (Isin(),'US03'),(Cusip(),'30303M1024')])
 def test_length_error(obj,input):
-    # check length error
     with pytest.raises(LengthError):
+        assert obj.validate(input)
+
+@pytest.mark.parametrize('obj,input',
+                         [(Sedol(),'20!6251'),(Isin(),'ES01@9067019'),(Cusip(),'03783*100')])
+def test_character_error(obj,input):
+    with pytest.raises(CharacterError):
         assert obj.validate(input)
 
 
 @pytest.mark.parametrize('obj,input',
                          [(Sedol(),'BCV7KTM'),(Isin(),'US037833100G'),(Cusip(),'30303M10#')])
 def test_checkdigit_error(obj,input):
-    # check digit error
     with pytest.raises(CheckDigitError):
         assert obj.validate(input)
 
@@ -118,6 +131,10 @@ def test_char_cusip(input):
 @pytest.mark.parametrize('input,expected',[('30303M102',True),('30303M101',False)])
 def test_is_valid(input,expected):
     assert Cusip().is_valid(input) == expected
+
+def test_cusip_country_code_error():
+    with pytest.raises(CountryCodeError):
+        Cusip().validate('I0303M109')
 
 # --------------------------------------------------------------
 # helper tests
