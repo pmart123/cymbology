@@ -25,13 +25,17 @@ class SecurityId(metaclass=ABCMeta):
     """
     A financial security id that can be validated.
 
-    Attributes:
-        MIN_LEN : minimum length of security id with check digit.
-        MAX_LEN : maximum length of security id with check digit.
+    Attributes
+    ----------
+        MIN_LEN : int
+            minimum length of security id with check digit.
+        MAX_LEN : int
+            maximum length of security id with check digit.
 
-    Note:
-        "sid" input variable name implies security id with check digit appended.
-        "sid_" input variable name implies security id w/o check digit.
+    Notes
+    -----
+    "sid" input variable name implies security id with check digit appended.
+    "sid_" input variable name implies security id w/o check digit.
     """
 
     MIN_LEN = 1
@@ -99,9 +103,12 @@ class Sedol(SecurityId):
     """
     SEDOL identification number.
 
-    Attributes:
-        WEIGHTS : corresponding weighting for each character in SEDOL id
-        _REV_WEIGHT : weighting from right to left charater removing the check digit
+    Attributes
+    ----------
+    WEIGHTS : tuple of int
+        corresponding weighting for each character in SEDOL id
+    _REV_WEIGHT : tuple of int
+        weighting from right to left charater removing the check digit
     """
 
     MAX_LEN = 7
@@ -136,7 +143,7 @@ class Isin(SecurityId):
     ISIN identification number.
 
     References
-    ---------
+    ----------
     http://www.isin.org/education/
     https://en.wikipedia.org/wiki/International_Securities_Identification_Number
     """
