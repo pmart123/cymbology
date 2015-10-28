@@ -22,23 +22,42 @@ CUSIP_FIRST_CHAR = set((i for i,j in CINS_CODES))
 CUSIP_FIRST_CHAR.update((str(i) for i in range(0,10)))
 
 class SecurityId(metaclass=ABCMeta):
-    """
-    A financial security id that can be validated.
+    """A financial security id that can be validated.
 
-    Attributes:
-        MIN_LEN : minimum length of security id with check digit.
-        MAX_LEN : maximum length of security id with check digit.
+    Attributes
+    ----------
+    MIN_LEN : int
+        minimum length of security id with check digit.
+    MAX_LEN : int
+        maximum length of security id with check digit.
 
-    Note:
-        "sid" input variable name implies security id with check digit appended.
-        "sid_" input variable name implies security id w/o check digit.
+    Notes
+    -----
+    "sid" input variable name implies security id with check digit appended.
+    "sid_" input variable name implies security id w/o check digit.
     """
 
     MIN_LEN = 1
     MAX_LEN = None
 
     def validate(self,sid):
-        """ True if sid is valid security id, else raises IdError Exception."""
+        """validate security id string.
+
+        Parameters
+        ----------
+        sid : str
+            security id string
+
+        Returns
+        -------
+        True
+            sid is valid security id
+
+        Raises
+        ------
+        IdError
+            sid is invalid security id.
+        """
 
         self._id_check(sid)
 
@@ -51,7 +70,7 @@ class SecurityId(metaclass=ABCMeta):
             raise CheckSumError
 
     def is_valid(self,sid):
-        """ True if sid is valid security id string, else False."""
+        """True if sid is valid security id string, else False."""
 
         try:
             return self.validate(sid)
@@ -59,7 +78,7 @@ class SecurityId(metaclass=ABCMeta):
             return False
 
     def calculate_checksum(self,sid_):
-        """ calculate the check digit."""
+        """calculate the check digit."""
 
         self._id_check(sid_,offset=1)
 
@@ -73,9 +92,7 @@ class SecurityId(metaclass=ABCMeta):
         NotImplementedError
 
     def append_checksum(self,sid_):
-        """
-        calculate and append check sum digit to security id.
-        """
+        """calculate and append check sum digit to security id."""
 
         sid_ += str(self.calculate_checksum(sid_))
         return sid_
@@ -96,12 +113,14 @@ class SecurityId(metaclass=ABCMeta):
         pass
 
 class Sedol(SecurityId):
-    """
-    SEDOL identification number.
+    """SEDOL identification number.
 
-    Attributes:
-        WEIGHTS : corresponding weighting for each character in SEDOL id
-        _REV_WEIGHT : weighting from right to left charater removing the check digit
+    Attributes
+    ----------
+    WEIGHTS : tuple of int
+        corresponding weighting for each character in SEDOL id
+    _REV_WEIGHT : tuple of int
+        weighting from right to left charater removing the check digit
     """
 
     MAX_LEN = 7
@@ -114,8 +133,7 @@ class Sedol(SecurityId):
         return check_sum
 
 class Cusip(SecurityId):
-    """
-    CUSIP identification number.
+    """CUSIP identification number.
 
     References
     ----------
@@ -132,11 +150,10 @@ class Cusip(SecurityId):
             raise CountryCodeError
 
 class Isin(SecurityId):
-    """
-    ISIN identification number.
+    """ISIN identification number.
 
     References
-    ---------
+    ----------
     http://www.isin.org/education/
     https://en.wikipedia.org/wiki/International_Securities_Identification_Number
     """
@@ -164,7 +181,7 @@ class Isin(SecurityId):
                 yield val // 10
 
 def val_check_digit(sid):
-    """ checks if check digit can convert to integer"""
+    """checks if check digit can convert to integer"""
 
     try:
         return int(sid[-1])
@@ -172,13 +189,13 @@ def val_check_digit(sid):
         raise CheckDigitError
 
 def luhn_modn_checksum(sid):
-    """ calculate the luhn modolo n check sum."""
+    """calculate the luhn modolo n check sum."""
 
     gen = (CHAR_MAP[c] for c in reversed(sid))
     return _luhnify(gen)
 
 def _luhnify(gen):
-    """ calculates luhn sum given a generator of integers in reverse order."""
+    """calculates luhn sum given a generator of integers in reverse order."""
 
     sum_ = 0
 
