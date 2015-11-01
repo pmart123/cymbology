@@ -1,6 +1,6 @@
 
 import string
-from abc import ABCMeta,abstractmethod
+from abc import ABCMeta, abstractmethod
 from itertools import chain
 from math import isnan
 
@@ -9,17 +9,13 @@ from security_id.exceptions import (IdError, NullError, CheckDigitError,
                                     LengthError, CountryCodeError,
                                     CharacterError, CheckSumError)
 
-_num_map = zip((str(i) for i in range(0,10)),range(0,10))
-_char_map = zip(string.ascii_uppercase,range(10,36))
-
 # character map
-CHAR_MAP = dict(chain(_num_map,_char_map))
+CHAR_MAP = dict(zip(string.digits + string.ascii_uppercase, range(0,36)))
 
 # SEDOL character and weight map(no vowels)
-SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set(['A','E','I','O','U'])}
+SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set('AEIOU')}
 
-CUSIP_FIRST_CHAR = set((i for i,j in CINS_CODES))
-CUSIP_FIRST_CHAR.update((str(i) for i in range(0,10)))
+CUSIP_FIRST_CHAR = set(chain((c[0] for c in CINS_CODES), string.digits))
 
 class SecurityId(metaclass=ABCMeta):
     """A financial security id that can be validated.
@@ -40,7 +36,7 @@ class SecurityId(metaclass=ABCMeta):
     MIN_LEN = 1
     MAX_LEN = None
 
-    def validate(self,sid):
+    def validate(self, sid):
         """validate security id string.
 
         Parameters
@@ -69,7 +65,7 @@ class SecurityId(metaclass=ABCMeta):
         else:
             raise CheckSumError
 
-    def is_valid(self,sid):
+    def is_valid(self, sid):
         """True if sid is valid security id string, else False."""
 
         try:
@@ -77,10 +73,10 @@ class SecurityId(metaclass=ABCMeta):
         except IdError:
             return False
 
-    def calculate_checksum(self,sid_):
+    def calculate_checksum(self, sid_):
         """calculate the check digit."""
 
-        self._id_check(sid_,offset=1)
+        self._id_check(sid_, offset=1)
 
         try:
             return self._calculate_checksum(sid_)
@@ -88,10 +84,10 @@ class SecurityId(metaclass=ABCMeta):
              raise CharacterError
 
     @abstractmethod
-    def _calculate_checksum(self,sid_):
+    def _calculate_checksum(self, sid_):
         NotImplementedError
 
-    def append_checksum(self,sid_):
+    def append_checksum(self, sid_):
         """calculate and append check sum digit to security id."""
 
         sid_ += str(self.calculate_checksum(sid_))
@@ -100,8 +96,8 @@ class SecurityId(metaclass=ABCMeta):
     def __str__(self):
         return "<security_id %s>" % self.__class__.__name__
 
-    def _id_check(self,sid_,offset=0):
-        if sid_ is None or sid_ is "" or (isinstance(sid_,float) and isnan(sid_)):
+    def _id_check(self, sid_, offset=0):
+        if sid_ is None or sid_ is "" or (isinstance(sid_, float) and isnan(sid_)):
             raise NullError
 
         if not (self.MIN_LEN - offset) <= len(sid_) <= (self.MAX_LEN - offset):
@@ -109,7 +105,7 @@ class SecurityId(metaclass=ABCMeta):
 
         self._additional_checks(sid_)
 
-    def _additional_checks(self,sid_):
+    def _additional_checks(self, sid_):
         pass
 
 class Sedol(SecurityId):
@@ -127,8 +123,8 @@ class Sedol(SecurityId):
     WEIGHTS = (1,3,1,7,3,9,1)
     _REV_WEIGHT = WEIGHTS[:-1][::-1]
 
-    def _calculate_checksum(self,sid_):
-        sum_ = sum((SEDOL_CHAR_MAP[c]*w for (c,w) in zip(sid_[::-1],self._REV_WEIGHT)))
+    def _calculate_checksum(self, sid_):
+        sum_ = sum((SEDOL_CHAR_MAP[c]*w for (c, w) in zip(sid_[::-1], self._REV_WEIGHT)))
         check_sum = (10 - sum_ % 10) % 10
         return check_sum
 
@@ -142,10 +138,10 @@ class Cusip(SecurityId):
 
     MAX_LEN = 9
 
-    def _calculate_checksum(self,sid_):
+    def _calculate_checksum(self, sid_):
         return _luhnify((CHAR_MAP[c] for c in reversed(sid_)))
 
-    def _additional_checks(self,sid_):
+    def _additional_checks(self, sid_):
         if sid_[0] not in CUSIP_FIRST_CHAR:
             raise CountryCodeError
 
@@ -161,15 +157,15 @@ class Isin(SecurityId):
     MIN_LEN = 12
     MAX_LEN = 12
 
-    def _additional_checks(self,sid_):
+    def _additional_checks(self, sid_):
         # first two letters are two character ISO country code
         if sid_[:2] not in COUNTRY_CODES:
             raise CountryCodeError
 
-    def _calculate_checksum(self,sid_):
+    def _calculate_checksum(self, sid_):
         return _luhnify(self._iter(sid_))
 
-    def _iter(self,sid_):
+    def _iter(self, sid_):
         for c in reversed(sid_):
             val = CHAR_MAP[c]
 
@@ -199,7 +195,7 @@ def _luhnify(gen):
 
     sum_ = 0
 
-    for index,val in enumerate(gen,1):
+    for index, val in enumerate(gen, 1):
         if index % 2:
             val *= 2
             sum_ += val // 10 + val % 10
