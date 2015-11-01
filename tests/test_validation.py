@@ -2,7 +2,8 @@ from unittest import TestCase
 
 import pytest
 
-from security_id.validation import Cusip, Isin, Sedol, val_check_digit
+from security_id.validation import val_check_digit
+from security_id import Isin, Cusip, Sedol
 from security_id.exceptions import (CharacterError, CheckDigitError, CheckSumError,
                                     CountryCodeError, LengthError, NullError)
 

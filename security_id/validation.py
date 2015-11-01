@@ -1,20 +1,9 @@
-import string
 from abc import ABCMeta, abstractmethod
-from itertools import chain
 from math import isnan
 
-from .alphanum import CHAR_MAP
-from .codes import CINS_CODES, COUNTRY_CODES
-from .exceptions import (IdError, NullError, LengthError, CountryCodeError,
-                                    CharacterError, CheckSumError)
-from .luhn import _luhnify
+from .exceptions import (IdError, NullError, LengthError,
+                         CharacterError, CheckDigitError, CheckSumError)
 
-# SEDOL character and weight map(no vowels)
-from security_id.exceptions import CheckDigitError
-
-SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set('AEIOU')}
-
-CUSIP_FIRST_CHAR = set(chain((c[0] for c in CINS_CODES), string.digits))
 
 class SecurityId(metaclass=ABCMeta):
     """A financial security id that can be validated.
@@ -94,75 +83,6 @@ class SecurityId(metaclass=ABCMeta):
 
     def _additional_checks(self, sid_):
         pass
-
-
-class Sedol(SecurityId):
-    """SEDOL identification number.
-
-    Attributes
-    ----------
-    WEIGHTS : tuple of int
-        corresponding weighting for each character in SEDOL id
-    _REV_WEIGHT : tuple of int
-        weighting from right to left charater removing the check digit
-    """
-
-    MAX_LEN = 7
-    WEIGHTS = (1,3,1,7,3,9,1)
-    _REV_WEIGHT = WEIGHTS[:-1][::-1]
-
-    def _calculate_checksum(self, sid_):
-        sum_ = sum((SEDOL_CHAR_MAP[c]*w for (c, w) in zip(sid_[::-1], self._REV_WEIGHT)))
-        check_sum = (10 - sum_ % 10) % 10
-        return check_sum
-
-
-class Cusip(SecurityId):
-    """CUSIP identification number.
-
-    References
-    ----------
-    https://www.cusip.com/pdf/CUSIP_Intro_03.14.11.pdf
-    """
-
-    MAX_LEN = 9
-
-    def _calculate_checksum(self, sid_):
-        return _luhnify((CHAR_MAP[c] for c in reversed(sid_)))
-
-    def _additional_checks(self, sid_):
-        if sid_[0] not in CUSIP_FIRST_CHAR:
-            raise CountryCodeError
-
-
-class Isin(SecurityId):
-    """ISIN identification number.
-
-    References
-    ----------
-    http://www.isin.org/education/
-    https://en.wikipedia.org/wiki/International_Securities_Identification_Number
-    """
-
-    MIN_LEN = 12
-    MAX_LEN = 12
-
-    def _additional_checks(self, sid_):
-        # first two letters are two character ISO country code
-        if sid_[:2] not in COUNTRY_CODES:
-            raise CountryCodeError
-
-    def _calculate_checksum(self, sid_):
-        return _luhnify(self._iter(sid_))
-
-    def _iter(self, sid_):
-        for c in reversed(sid_):
-            val = CHAR_MAP[c]
-
-            if val < 10:
-                yield val
-            else:
-                yield from (val % 10, val // 10)
 
 
 def val_check_digit(sid):
