@@ -13,16 +13,16 @@ This package can be used to validate these identifiers, discover the validation 
 ### ISIN number
 ```python
 from security_id import validation
-isin_ = validation.Isin()
+isin = validation.Isin()
 
 # validate ISIN number 'US0378331005', throwing error IdError if invalid
-tf = isin_.validate('US0378331005')
+tf = isin.validate('US0378331005')
 
 # return validation boolean for ISIN number
-tr = isin_.is_valid('US0378331005')
+tr = isin.is_valid('US0378331005')
 
 # calculate checksum for ISIN number 'US0378331005'
-check_digit = isin_.calculate_checksum('US037833100')
+check_digit = isin.calculate_checksum('US037833100')
 
 ```
 
