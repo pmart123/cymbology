@@ -1,13 +1,4 @@
 from .alphanum import CHAR_MAP
-from .exceptions import CheckDigitError
-
-def val_check_digit(sid):
-    """checks if check digit can convert to integer"""
-
-    try:
-        return int(sid[-1])
-    except ValueError:
-        raise CheckDigitError
 
 def luhn_modn_checksum(sid):
     """calculate the luhn modolo n check sum."""

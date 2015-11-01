@@ -7,9 +7,11 @@ from .alphanum import CHAR_MAP
 from .codes import CINS_CODES, COUNTRY_CODES
 from .exceptions import (IdError, NullError, LengthError, CountryCodeError,
                                     CharacterError, CheckSumError)
-from .helpers import val_check_digit, _luhnify
+from .luhn import _luhnify
 
 # SEDOL character and weight map(no vowels)
+from security_id.exceptions import CheckDigitError
+
 SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set('AEIOU')}
 
 CUSIP_FIRST_CHAR = set(chain((c[0] for c in CINS_CODES), string.digits))
@@ -161,3 +163,12 @@ class Isin(SecurityId):
                 yield val
             else:
                 yield from (val % 10, val // 10)
+
+
+def val_check_digit(sid):
+    """checks if check digit can convert to integer"""
+
+    try:
+        return int(sid[-1])
+    except ValueError:
+        raise CheckDigitError
