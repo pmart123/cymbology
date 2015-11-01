@@ -9,17 +9,13 @@ from security_id.exceptions import (IdError, NullError, CheckDigitError,
                                     LengthError, CountryCodeError,
                                     CharacterError, CheckSumError)
 
-_num_map = zip((str(i) for i in range(0,10)),range(0,10))
-_char_map = zip(string.ascii_uppercase,range(10,36))
-
 # character map
-CHAR_MAP = dict(chain(_num_map,_char_map))
+CHAR_MAP = dict(zip(string.digits + string.ascii_uppercase, range(0,36)))
 
 # SEDOL character and weight map(no vowels)
-SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set(['A','E','I','O','U'])}
+SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set('AEIOU')}
 
-CUSIP_FIRST_CHAR = set((i for i,j in CINS_CODES))
-CUSIP_FIRST_CHAR.update((str(i) for i in range(0,10)))
+CUSIP_FIRST_CHAR = set(chain((c[0] for c in CINS_CODES), string.digits))
 
 class SecurityId(metaclass=ABCMeta):
     """A financial security id that can be validated.
