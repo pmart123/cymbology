@@ -1,7 +1,6 @@
 import string
 from abc import ABCMeta, abstractmethod
 from itertools import chain
-
 from math import isnan
 
 from security_id.codes import CINS_CODES, COUNTRY_CODES
@@ -96,6 +95,7 @@ class SecurityId(metaclass=ABCMeta):
     def _additional_checks(self, sid_):
         pass
 
+
 class Sedol(SecurityId):
     """SEDOL identification number.
 
@@ -116,6 +116,7 @@ class Sedol(SecurityId):
         check_sum = (10 - sum_ % 10) % 10
         return check_sum
 
+
 class Cusip(SecurityId):
     """CUSIP identification number.
 
@@ -132,6 +133,7 @@ class Cusip(SecurityId):
     def _additional_checks(self, sid_):
         if sid_[0] not in CUSIP_FIRST_CHAR:
             raise CountryCodeError
+
 
 class Isin(SecurityId):
     """ISIN identification number.
