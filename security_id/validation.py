@@ -162,7 +162,4 @@ class Isin(SecurityId):
             if val < 10:
                 yield val
             else:
-                #yield from (val % 10, val // 10) #py3.4 support only
-                yield val % 10
-                yield val // 10
-
+                yield from (val % 10, val // 10)
