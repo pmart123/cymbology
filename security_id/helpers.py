@@ -1,6 +1,5 @@
-from security_id.exceptions import CheckDigitError
-from security_id.validation import CHAR_MAP
-
+from .alphanum import CHAR_MAP
+from .exceptions import CheckDigitError
 
 def val_check_digit(sid):
     """checks if check digit can convert to integer"""

@@ -3,13 +3,11 @@ from abc import ABCMeta, abstractmethod
 from itertools import chain
 from math import isnan
 
-from security_id.codes import CINS_CODES, COUNTRY_CODES
-from security_id.exceptions import (IdError, NullError, LengthError, CountryCodeError,
+from .alphanum import CHAR_MAP
+from .codes import CINS_CODES, COUNTRY_CODES
+from .exceptions import (IdError, NullError, LengthError, CountryCodeError,
                                     CharacterError, CheckSumError)
-from security_id.helpers import val_check_digit, _luhnify
-
-# character map
-CHAR_MAP = dict(zip(string.digits + string.ascii_uppercase, range(0,36)))
+from .helpers import val_check_digit, _luhnify
 
 # SEDOL character and weight map(no vowels)
 SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set('AEIOU')}
