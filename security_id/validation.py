@@ -164,4 +164,3 @@ class Isin(SecurityId):
                 yield val % 10
                 yield val // 10
 
-

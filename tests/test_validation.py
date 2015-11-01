@@ -1,12 +1,11 @@
-
 from unittest import TestCase
 
 import pytest
 
-from security_id.validation import Cusip, Isin, Sedol, luhn_modn_checksum
-from security_id.helpers import val_check_digit, luhn_modn_checksum
+from security_id.validation import Cusip, Isin, Sedol
 from security_id.exceptions import (CharacterError, CheckDigitError, CheckSumError,
                                     CountryCodeError, LengthError, NullError)
+
 
 # --------------------------------------------------------------
 # SecurityId tests
@@ -137,14 +136,3 @@ def test_cusip_country_code_error():
     with pytest.raises(CountryCodeError):
         Cusip().validate('I0303M109')
 
-# --------------------------------------------------------------
-# helper tests
-# --------------------------------------------------------------
-@pytest.mark.parametrize('input,expected',[('0',0),('A',8)])
-def test_luhn_modn_checksum(input,expected):
-    assert luhn_modn_checksum(input) == expected
-
-class TestValCheckDigit(TestCase):
-    def test_val_check_digit(self):
-        self.assertEqual(val_check_digit('abc1'),1)
-        self.assertRaises(CheckDigitError,val_check_digit,'abc')
