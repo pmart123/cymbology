@@ -1,13 +1,13 @@
-
 import string
 from abc import ABCMeta, abstractmethod
 from itertools import chain
+
 from math import isnan
 
 from security_id.codes import CINS_CODES, COUNTRY_CODES
-from security_id.exceptions import (IdError, NullError, CheckDigitError,
-                                    LengthError, CountryCodeError,
+from security_id.exceptions import (IdError, NullError, LengthError, CountryCodeError,
                                     CharacterError, CheckSumError)
+from security_id.helpers import val_check_digit, _luhnify
 
 # character map
 CHAR_MAP = dict(zip(string.digits + string.ascii_uppercase, range(0,36)))
@@ -39,20 +39,8 @@ class SecurityId(metaclass=ABCMeta):
     def validate(self, sid):
         """validate security id string.
 
-        Parameters
-        ----------
-        sid : str
-            security id string
+        returns True if is validate id, else raises an IdError exception.
 
-        Returns
-        -------
-        True
-            sid is valid security id
-
-        Raises
-        ------
-        IdError
-            sid is invalid security id.
         """
 
         self._id_check(sid)
@@ -176,31 +164,4 @@ class Isin(SecurityId):
                 yield val % 10
                 yield val // 10
 
-def val_check_digit(sid):
-    """checks if check digit can convert to integer"""
-
-    try:
-        return int(sid[-1])
-    except ValueError:
-        raise CheckDigitError
-
-def luhn_modn_checksum(sid):
-    """calculate the luhn modolo n check sum."""
-
-    gen = (CHAR_MAP[c] for c in reversed(sid))
-    return _luhnify(gen)
-
-def _luhnify(gen):
-    """calculates luhn sum given a generator of integers in reverse order."""
-
-    sum_ = 0
-
-    for index, val in enumerate(gen, 1):
-        if index % 2:
-            val *= 2
-            sum_ += val // 10 + val % 10
-        else:
-            sum_ += val
-
-    return (10 - sum_ % 10) % 10
 

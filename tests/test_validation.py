@@ -3,7 +3,8 @@ from unittest import TestCase
 
 import pytest
 
-from security_id.validation import Cusip, Isin, Sedol, val_check_digit, luhn_modn_checksum
+from security_id.validation import Cusip, Isin, Sedol, luhn_modn_checksum
+from security_id.helpers import val_check_digit, luhn_modn_checksum
 from security_id.exceptions import (CharacterError, CheckDigitError, CheckSumError,
                                     CountryCodeError, LengthError, NullError)
 
