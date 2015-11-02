@@ -19,7 +19,7 @@ class AlphaNumericIdMixin(object):
 
     # dictionary
     checksum_param = None
-    
+
     def test_validate_none_input(self):
         self.assertRaises(NullError, self.obj.validate, None)
 
