@@ -72,8 +72,7 @@ class SecurityId(metaclass=ABCMeta):
         return "<security_id %s>" % self.__class__.__name__
 
     def _id_check(self, sid_, offset=0):
-        # if sid_ is None or sid_ is "" or (isinstance(sid_, float) and isnan(sid_)):
-        #     raise NullError
+
         null_check(sid_)
 
         if not (self.MIN_LEN - offset) <= len(sid_) <= (self.MAX_LEN - offset):
