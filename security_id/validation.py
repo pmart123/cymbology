@@ -31,7 +31,7 @@ class SecurityId(metaclass=ABCMeta):
 
         """
 
-        self._id_check(sid)
+        null_check(sid)
         check_sum = self.calculate_checksum(sid[:-1])
         check_digit = val_check_digit(sid)
 
@@ -72,8 +72,9 @@ class SecurityId(metaclass=ABCMeta):
         return "<security_id %s>" % self.__class__.__name__
 
     def _id_check(self, sid_, offset=0):
-        if sid_ is None or sid_ is "" or (isinstance(sid_, float) and isnan(sid_)):
-            raise NullError
+        # if sid_ is None or sid_ is "" or (isinstance(sid_, float) and isnan(sid_)):
+        #     raise NullError
+        null_check(sid_)
 
         if not (self.MIN_LEN - offset) <= len(sid_) <= (self.MAX_LEN - offset):
             raise LengthError
@@ -83,6 +84,12 @@ class SecurityId(metaclass=ABCMeta):
     def _additional_checks(self, sid_):
         pass
 
+
+def null_check(sid):
+    """Check if id string is null."""
+
+    if sid is None or sid is "" or (isinstance(sid, float) and isnan(sid)):
+        raise NullError
 
 def val_check_digit(sid):
     """checks if check digit can convert to integer"""
