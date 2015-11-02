@@ -1,12 +1,8 @@
-
 from security_id.exceptions import (CharacterError, CheckDigitError, CheckSumError,
                                     LengthError, NullError)
 
-
-class AlphaNumericIdTests(object):
-    """
-
-    error attribute class for SecurityId objects.
+class AlphaNumericIdMixin(object):
+    """mixin class for alpha numeric security ids.
 
     """
 
@@ -18,17 +14,12 @@ class AlphaNumericIdTests(object):
     numeric_ids = None
     character_ids = None
 
+    valid_id = None
+    invalid_id = None
+
     # dictionary
-    is_valid_ids = None
-    check_digit_ids = None
-
-    def __init__(self,
-                 character_error,
-                 checkdigit_error,
-                 checksum_error,
-                 length_error):
-        pass
-
+    checksum_param = None
+    
     def test_validate_none_input(self):
         self.assertRaises(NullError, self.obj.validate, None)
 
@@ -69,10 +60,10 @@ class AlphaNumericIdTests(object):
         self.assertTrue(self.obj.is_valid(self.valid_id))
         self.assertFalse(self.obj.is_valid(self.invalid_id))
 
-
-    # TODO maybe dict?
     def test_append_checksum(self):
         self.assertEqual(self.obj.append_checksum(
-                self.no_check_digit_id, self.check_digit))
+            self.checksum_param['sid_']),self.checksum_param['sid'])
 
-
+    def test_calculate_checksum(self):
+        self.assertEqual(self.obj.calculate_checksum(
+            self.checksum_param['sid_']), int(self.checksum_param['sid'][-1]))
