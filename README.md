@@ -30,6 +30,10 @@ check_digit = isin.calculate_checksum('US037833100')
 
 This package currently only relies on the standard library, and has not been tested for Python 2.X.
 
+# Running Tests
+
+PYTHONPATH=. py.test --cov
+
 # Extending
 
 Idenifiers that rely on alpha-numeric codes should be able to be easily extended.  Feel free to add additional identification algorithmns.  Legal Indenifiers(LEI) ids will be added to master branch of repo soon.
