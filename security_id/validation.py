@@ -32,8 +32,7 @@ class SecurityId(metaclass=ABCMeta):
         """
 
         self._id_check(sid)
-
-        check_sum = self.calculate_checksum(sid[:(self.MAX_LEN - 1)])
+        check_sum = self.calculate_checksum(sid[:-1])
         check_digit = val_check_digit(sid)
 
         if check_sum == check_digit:
