@@ -1,7 +1,7 @@
 from unittest import TestCase
 import pytest
 from security_id import Cusip, cusip_from_isin
-from security_id.exceptions import CountryCodeError
+from security_id.exceptions import CountryCodeError, IdError
 from tests.test_alpha_numeric_id import AlphaNumericIdMixin
 
 
@@ -38,3 +38,8 @@ def test_cusip_from_isin(input, expected):
 def test_cusip_from_isin_country_error():
     with pytest.raises(CountryCodeError):
         assert cusip_from_isin('ES0109067019')
+
+
+def test_cusip_from_isin_validation_error():
+    with pytest.raises(IdError):
+        assert cusip_from_isin('USROUTE66')
