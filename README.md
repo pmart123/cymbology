@@ -16,11 +16,13 @@ from security_id import validation
 isin = validation.Isin()
 
 # validate ISIN number 'US0378331005', throwing error IdError if invalid
-tf = isin.validate('US0378331005')
-
+>>> valid_isin = isin.validate('US0378331005')
+>>> print(valid_isin)
+    'US0378331005'
 # return validation boolean for ISIN number
-tr = isin.is_valid('US0378331005')
-
+>>> tf = isin.is_valid('US0378331005')
+>>> tf
+    True
 # calculate checksum for ISIN number 'US0378331005'
 check_digit = isin.calculate_checksum('US037833100')
 
