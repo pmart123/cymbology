@@ -12,19 +12,25 @@ This package can be used to validate these identifiers, discover the validation 
 
 ### ISIN number
 ```python
-from security_id import validation
-isin = validation.Isin()
+from security_id import Isin, cusip_from_isin
+isin = Isin()
 
 # validate ISIN number 'US0378331005', throwing error IdError if invalid
 >>> valid_isin = isin.validate('US0378331005')
->>> print(valid_isin)
-    'US0378331005'
+>>> valid_isin
+'US0378331005'
+    
 # return validation boolean for ISIN number
 >>> tf = isin.is_valid('US0378331005')
 >>> tf
-    True
+True
+    
 # calculate checksum for ISIN number 'US0378331005'
 check_digit = isin.calculate_checksum('US037833100')
+
+# convert ISIN to CUSIP number.
+>>> cusip_from_isin('US0378331005')
+'037833100'
 
 ```
 
