@@ -1,8 +1,7 @@
 from unittest import TestCase
-
-from security_id import Cusip
+import pytest
+from security_id import Cusip, cusip_from_isin
 from security_id.exceptions import CountryCodeError
-
 from tests.test_alpha_numeric_id import AlphaNumericIdMixin
 
 
@@ -18,7 +17,7 @@ class TestCusip(AlphaNumericIdMixin, TestCase):
     valid_id = '30303M102'
     invalid_id = ""
 
-    checksum_param = {'sid_' : '03783310','sid': '037833100'}
+    checksum_param = {'sid_': '03783310', 'sid': '037833100'}
 
     def setUp(self):
         self.obj = Cusip()
@@ -28,3 +27,14 @@ class TestCusip(AlphaNumericIdMixin, TestCase):
 
     def tearDown(self):
         del self.obj
+
+
+@pytest.mark.parametrize('input,expected',
+                         [('US0378331005', '037833100'), ('US66987V1098', '66987V109')])
+def test_cusip_from_isin(input, expected):
+    assert cusip_from_isin(input) == expected
+
+
+def test_cusip_from_isin_country_error():
+    with pytest.raises(CountryCodeError):
+        assert cusip_from_isin('ES0109067019')

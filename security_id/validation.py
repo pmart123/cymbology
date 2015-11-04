@@ -27,7 +27,7 @@ class SecurityId(metaclass=ABCMeta):
     def validate(self, sid):
         """validate security id string.
 
-        returns True if is validate id, else raises an IdError exception.
+        returns sid if is validate, else raises an IdError exception.
 
         """
 
@@ -36,7 +36,7 @@ class SecurityId(metaclass=ABCMeta):
         check_digit = val_check_digit(sid)
 
         if check_sum == check_digit:
-            return True
+            return sid
         else:
             raise CheckSumError
 
