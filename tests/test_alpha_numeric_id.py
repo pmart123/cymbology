@@ -49,7 +49,7 @@ class AlphaNumericIdMixin(object):
     def test_validate_numeric_id(self):
         for val in self.numeric_ids:
             with self.subTest(val=val):
-                self.assertTrue(self.obj.validate(val))
+                self.assertEqual(self.obj.validate(val), val)
 
     def test_validate_char_id(self):
         for val in self.character_ids:

@@ -44,7 +44,8 @@ class SecurityId(metaclass=ABCMeta):
         """True if sid is valid security id string, else False."""
 
         try:
-            return self.validate(sid)
+            self.validate(sid)
+            return True
         except IdError:
             return False
 
