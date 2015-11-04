@@ -6,3 +6,4 @@ venv
 _build
 build/
 .idea/
+.cache/

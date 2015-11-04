@@ -25,3 +25,11 @@ class Cusip(SecurityId):
     def _additional_checks(self, sid_):
         if sid_[0] not in CUSIP_FIRST_CHAR:
             raise CountryCodeError
+
+def cusip_from_isin(isin):
+    """Convert ISIN security ids to CUSIP ids."""
+
+    if not isin.startswith('US'):
+        raise CountryCodeError
+
+    return Cusip().validate(isin[2:-1])
