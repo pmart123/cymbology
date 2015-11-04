@@ -27,13 +27,13 @@ class TestEmptyInput(TestCase):
             with self.subTest(val=val):
                 self.assertRaises(NullError,val.validate,"")
 
-# @pytest.mark.parametrize('obj',[(Sedol()),(Isin()),(Cusip())])
-# def test_empty_string(obj):
-#     with pytest.raises(NullError):
-#         obj.validate("")
-#
-#     with pytest.raises(NullError):
-#         obj.validate(None)
+@pytest.mark.parametrize('obj',[(Sedol()),(Isin()),(Cusip())])
+def test_empty_string(obj):
+    with pytest.raises(NullError):
+        obj.validate("")
+
+    with pytest.raises(NullError):
+        obj.validate(None)
 
 class TestValid(TestCase):
     def setUp(self):
@@ -92,11 +92,11 @@ def test_checksum_error(obj,input):
 
 @pytest.mark.parametrize('input',['0263494','2046251','0798059'])
 def test_numeric_sedol(input):
-    assert Sedol().validate(input) == True
+    assert Sedol().validate(input) == input
 
 @pytest.mark.parametrize('input',['BCV7KT2'])
 def test_char_sedol(input):
-    assert Sedol().validate(input) == True
+    assert Sedol().validate(input) == input
 
 # --------------------------------------------------------------
 # ISIN tests
@@ -104,12 +104,12 @@ def test_char_sedol(input):
 
 @pytest.mark.parametrize('input',['US0378331005','ES0109067019','GB0002374006','HK0941009539'])
 def test_numeric_isin(input):
-    assert Isin().validate(input) == True
+    assert Isin().validate(input) == input
 
 
 @pytest.mark.parametrize('input',['US30231G1022','CNE1000007Q1','US66987V1098'])
 def test_char_isin(input):
-    assert Isin().validate(input) == True
+    assert Isin().validate(input) == input
 
 
 def test_isin_country_code_error():
@@ -121,13 +121,13 @@ def test_isin_country_code_error():
 # CUSIP tests
 # --------------------------------------------------------------
 
-@pytest.mark.parametrize('input',['037833100'])
+@pytest.mark.parametrize('input',['37833100','037833100'])
 def test_numeric_cusip(input):
-    assert Cusip().validate(input) == True
+    assert Cusip().validate(input) == input
 
-@pytest.mark.parametrize('input',['30303M102'])
+@pytest.mark.parametrize('input',['30303M102','09062X103'])
 def test_char_cusip(input):
-    assert Cusip().validate(input) == True
+    assert Cusip().validate(input) == input
 
 @pytest.mark.parametrize('input,expected',[('30303M102',True),('30303M101',False)])
 def test_is_valid(input,expected):
