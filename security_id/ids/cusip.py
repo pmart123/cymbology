@@ -26,6 +26,7 @@ class Cusip(SecurityId):
         if sid_[0] not in CUSIP_FIRST_CHAR:
             raise CountryCodeError
 
+
 def cusip_from_isin(isin):
     """Convert ISIN security ids to CUSIP ids."""
 

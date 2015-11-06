@@ -3,7 +3,7 @@ from security_id.validation import SecurityId
 
 
 # SEDOL character and weight map(no vowels)
-SEDOL_CHAR_MAP = {k:v for (k,v) in CHAR_MAP.items() if k not in set('AEIOU')}
+SEDOL_CHAR_MAP = {k: v for (k, v) in CHAR_MAP.items() if k not in set('AEIOU')}
 
 class Sedol(SecurityId):
     """SEDOL identification number.
@@ -17,7 +17,7 @@ class Sedol(SecurityId):
     """
 
     MAX_LEN = 7
-    WEIGHTS = (1,3,1,7,3,9,1)
+    WEIGHTS = (1, 3, 1, 7, 3, 9, 1)
     _REV_WEIGHT = WEIGHTS[:-1][::-1]
 
     def _calculate_checksum(self, sid_):

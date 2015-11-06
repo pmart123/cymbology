@@ -56,7 +56,7 @@ class SecurityId(metaclass=ABCMeta):
         try:
             return self._calculate_checksum(sid_)
         except KeyError:
-             raise CharacterError
+            raise CharacterError
 
     @abstractmethod
     def _calculate_checksum(self, sid_):
@@ -89,6 +89,7 @@ def null_check(sid):
 
     if sid is None or sid is "" or (isinstance(sid, float) and isnan(sid)):
         raise NullError
+
 
 def val_check_digit(sid):
     """checks if check digit can convert to integer"""
