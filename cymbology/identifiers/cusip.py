@@ -7,7 +7,7 @@ from cymbology.luhn import _luhnify
 from cymbology.validation import SecurityId
 
 
-CUSIP_FIRST_CHAR = set(chain((c[0] for c in CINS_CODES), string.digits))
+CUSIP_FIRST_CHAR = frozenset(chain((c[0] for c in CINS_CODES), string.digits))
 
 
 class Cusip(SecurityId):
@@ -29,7 +29,7 @@ class Cusip(SecurityId):
 
 
 def cusip_from_isin(isin):
-    """Convert ISIN security ids to CUSIP ids."""
+    """Convert ISIN security identifiers to CUSIP identifiers."""
 
     if not isin.startswith('US'):
         raise CountryCodeError

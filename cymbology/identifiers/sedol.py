@@ -1,9 +1,13 @@
+from types import MappingProxyType
+
 from cymbology.alphanum import CHAR_MAP
 from cymbology.validation import SecurityId
 
 
 # SEDOL character and weight map(no vowels)
-SEDOL_CHAR_MAP = {k: v for (k, v) in CHAR_MAP.items() if k not in set('AEIOU')}
+SEDOL_CHAR_MAP = MappingProxyType(
+    {k: v for (k, v) in CHAR_MAP.items() if k not in set('AEIOU')}
+)
 
 
 class Sedol(SecurityId):

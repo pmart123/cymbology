@@ -2,7 +2,7 @@
 
 import os
 from os.path import exists
-from setuptools import setup
+from setuptools import find_packages, setup
 
 ENCODING = 'utf-8'
 PACKAGE_NAME = 'cymbology'
@@ -30,7 +30,7 @@ def get_read_me(file_name):
 
 setup(
     name=PACKAGE_NAME,
-    packages=[PACKAGE_NAME],
+    packages=find_packages(exclude=('tests',)),
     description=DESCRIPTION,
     package_data={
         '': ['*.txt', '*.json'],

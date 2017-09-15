@@ -1,4 +1,4 @@
-from cymbology.ids import (Sedol, Cusip, cusip_from_isin, Isin)
+from cymbology.identifiers import (Sedol, Cusip, cusip_from_isin, Isin)
 from cymbology._version import version_info, __version__
 
 
