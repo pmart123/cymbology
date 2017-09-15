@@ -13,7 +13,7 @@ install:
   - python setup.py install
 
 script:
-  - py.test tests -s --cov
+  - py.test tests --cov
 
 after_success:
   - codecov
