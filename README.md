@@ -1,5 +1,5 @@
-# security_id
-security_id identifies and validates financial security ids.  Currently the following identifiers are supported:
+# cymbology
+cymbology identifies and validates financial security ids.  Currently the following identifiers are supported:
 
 1. Sedol
 2. Cusip
@@ -12,7 +12,7 @@ This package can be used to validate these identifiers, discover the validation 
 
 ### ISIN number
 ```python
-from security_id import Isin, cusip_from_isin
+from cymbology import Isin, cusip_from_isin
 isin = Isin()
 
 # validate ISIN number 'US0378331005', throwing error IdError if invalid
@@ -31,7 +31,6 @@ check_digit = isin.calculate_checksum('US037833100')
 # convert ISIN to CUSIP number.
 >>> cusip_from_isin('US0378331005')
 '037833100'
-
 ```
 
 # Dependancies and Installation Notes

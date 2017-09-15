@@ -1,10 +1,11 @@
-from .alphanum import CHAR_MAP
+from cymbology.alphanum import CHAR_MAP
+
 
 def luhn_modn_checksum(sid):
     """calculate the luhn modolo n check sum."""
 
-    gen = (CHAR_MAP[c] for c in reversed(sid))
-    return _luhnify(gen)
+    return _luhnify(CHAR_MAP[c] for c in reversed(sid))
+
 
 def _luhnify(gen):
     """calculates luhn sum given a generator of integers in reverse order."""

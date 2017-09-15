@@ -1,9 +1,9 @@
 from unittest import TestCase
 
-from security_id import Isin
-from security_id.exceptions import CountryCodeError
+from cymbology import Isin
+from cymbology.exceptions import CountryCodeError
 
-from tests.test_alpha_numeric_id import AlphaNumericIdMixin
+from tests.fixtures import AlphaNumericIdMixin
 
 
 class TestIsin(AlphaNumericIdMixin, TestCase):
@@ -12,13 +12,13 @@ class TestIsin(AlphaNumericIdMixin, TestCase):
     check_digit_issue = ['US037833100G']
     checksum_issue = ['US0378331009']
 
-    numeric_ids = ['US0378331005','ES0109067019','GB0002374006','HK0941009539']
-    character_ids = ['US30231G1022','CNE1000007Q1','US66987V1098']
+    numeric_ids = ['US0378331005', 'ES0109067019', 'GB0002374006', 'HK0941009539']
+    character_ids = ['US30231G1022', 'CNE1000007Q1', 'US66987V1098']
 
     valid_id = 'CNE1000007Q1'
     invalid_id = ""
 
-    checksum_param = {'sid_' : 'ES010906701','sid': 'ES0109067019'}
+    checksum_param = {'sid_': 'ES010906701', 'sid': 'ES0109067019'}
 
     def setUp(self):
         self.obj = Isin()

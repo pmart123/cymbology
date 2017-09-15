@@ -5,5 +5,19 @@
 venv
 _build
 build/
-.idea/
+.DS_Store
 .cache/
+.env
+.venv
+.envrc
+/dist
+/tmp
+
+# pycharm
+.idea/
+
+# ipython
+.ipynb_checkpoints/
+
+# Sublime
+/*.sublime-*

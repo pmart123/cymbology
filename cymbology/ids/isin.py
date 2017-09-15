@@ -1,8 +1,8 @@
-from security_id.alphanum import CHAR_MAP
-from security_id.codes import COUNTRY_CODES
-from security_id.exceptions import CountryCodeError
-from security_id.luhn import _luhnify
-from security_id.validation import SecurityId
+from cymbology.alphanum import CHAR_MAP
+from cymbology.codes import COUNTRY_CODES
+from cymbology.exceptions import CountryCodeError
+from cymbology.luhn import _luhnify
+from cymbology.validation import SecurityId
 
 
 class Isin(SecurityId):

@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from security_id import Sedol
+from cymbology import Sedol
 
-from tests.test_alpha_numeric_id import AlphaNumericIdMixin
+from tests.fixtures import AlphaNumericIdMixin
 
 
 class TestSedol(AlphaNumericIdMixin, TestCase):
@@ -11,13 +11,13 @@ class TestSedol(AlphaNumericIdMixin, TestCase):
     check_digit_issue = ['BCV7KTM']
     checksum_issue = ['BCV7KT5']
 
-    numeric_ids = ['0263494','2046251','0798059']
+    numeric_ids = ['0263494', '2046251', '0798059']
     character_ids = ['BCV7KT2']
 
     valid_id = '0263494'
     invalid_id = ""
 
-    checksum_param = {'sid_' : 'BCV7KT','sid': 'BCV7KT2'}
+    checksum_param = {'sid_': 'BCV7KT', 'sid': 'BCV7KT2'}
 
     def setUp(self):
         self.obj = Sedol()

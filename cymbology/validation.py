@@ -1,8 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from math import isnan
 
-from .exceptions import (IdError, NullError, LengthError,
-                         CharacterError, CheckDigitError, CheckSumError)
+from cymbology.exceptions import (
+    IdError, NullError, LengthError,
+    CharacterError, CheckDigitError, CheckSumError
+)
 
 
 class SecurityId(metaclass=ABCMeta):
@@ -28,7 +30,6 @@ class SecurityId(metaclass=ABCMeta):
         """validate security id string.
 
         returns sid if is validate, else raises an IdError exception.
-
         """
 
         null_check(sid)
@@ -69,7 +70,7 @@ class SecurityId(metaclass=ABCMeta):
         return sid_
 
     def __str__(self):
-        return "<security_id %s>" % self.__class__.__name__
+        return "<cymbology %s>" % self.__class__.__name__
 
     def _id_check(self, sid_, offset=0):
 
