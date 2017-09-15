@@ -30,7 +30,6 @@ class SecurityId(metaclass=ABCMeta):
         """validate security id string.
 
         returns sid if is validate, else raises an IdError exception.
-
         """
 
         null_check(sid)

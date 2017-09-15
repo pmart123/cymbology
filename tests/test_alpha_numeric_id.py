@@ -3,9 +3,7 @@ from cymbology.exceptions import (CharacterError, CheckDigitError, CheckSumError
 
 
 class AlphaNumericIdMixin(object):
-    """mixin class for alpha numeric security ids.
-
-    """
+    """mixin class for alpha numeric security ids."""
 
     length_issue = None
     character_issue = None
