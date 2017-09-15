@@ -2,7 +2,7 @@ from unittest import TestCase
 import pytest
 from cymbology import Cusip, cusip_from_isin
 from cymbology.exceptions import CountryCodeError, IdError
-from tests.test_alpha_numeric_id import AlphaNumericIdMixin
+from tests.fixtures import AlphaNumericIdMixin
 
 
 class TestCusip(AlphaNumericIdMixin, TestCase):

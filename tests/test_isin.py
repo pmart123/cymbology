@@ -3,7 +3,7 @@ from unittest import TestCase
 from cymbology import Isin
 from cymbology.exceptions import CountryCodeError
 
-from tests.test_alpha_numeric_id import AlphaNumericIdMixin
+from tests.fixtures import AlphaNumericIdMixin
 
 
 class TestIsin(AlphaNumericIdMixin, TestCase):

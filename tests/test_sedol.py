@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from cymbology import Sedol
 
-from tests.test_alpha_numeric_id import AlphaNumericIdMixin
+from tests.fixtures import AlphaNumericIdMixin
 
 
 class TestSedol(AlphaNumericIdMixin, TestCase):
