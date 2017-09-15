@@ -45,6 +45,14 @@ setup(
         'develop': get_requirements('requirements-dev.txt'),
         'test': get_requirements('requirements-test.txt')
     },
+    keywords='finance symbology securities entities',
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+    ],
     long_description=get_read_me('README.md'),
     zip_safe=False
 )
