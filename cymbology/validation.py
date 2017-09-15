@@ -1,8 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from math import isnan
 
-from .exceptions import (IdError, NullError, LengthError,
-                         CharacterError, CheckDigitError, CheckSumError)
+from cymbology.exceptions import (
+    IdError, NullError, LengthError,
+    CharacterError, CheckDigitError, CheckSumError
+)
 
 
 class SecurityId(metaclass=ABCMeta):
