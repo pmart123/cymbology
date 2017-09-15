@@ -29,7 +29,7 @@ class Cusip(SecurityId):
 
 
 def cusip_from_isin(isin):
-    """Convert ISIN security ids to CUSIP ids."""
+    """Convert ISIN security identifiers to CUSIP identifiers."""
 
     if not isin.startswith('US'):
         raise CountryCodeError
