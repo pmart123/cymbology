@@ -29,9 +29,9 @@ def get_read_me(file_name):
 
 
 setup(
-    name='PACKAGE_NAME',
+    name=PACKAGE_NAME,
     packages=[PACKAGE_NAME],
-    description='financial identifier validation.',
+    description=DESCRIPTION,
     package_data={
         '': ['*.txt', '*.json'],
     },
@@ -45,7 +45,7 @@ setup(
         'develop': get_requirements('requirements-dev.txt'),
         'test': get_requirements('requirements-test.txt')
     },
-    keywords='finance symbology securities entities',
+    keywords='finance symbology securities entities entity-resolution',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
