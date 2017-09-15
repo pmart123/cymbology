@@ -1,9 +1,10 @@
-from security_id.alphanum import CHAR_MAP
-from security_id.validation import SecurityId
+from cymbology.alphanum import CHAR_MAP
+from cymbology.validation import SecurityId
 
 
 # SEDOL character and weight map(no vowels)
 SEDOL_CHAR_MAP = {k: v for (k, v) in CHAR_MAP.items() if k not in set('AEIOU')}
+
 
 class Sedol(SecurityId):
     """SEDOL identification number.
@@ -21,6 +22,6 @@ class Sedol(SecurityId):
     _REV_WEIGHT = WEIGHTS[:-1][::-1]
 
     def _calculate_checksum(self, sid_):
-        sum_ = sum((SEDOL_CHAR_MAP[c]*w for (c, w) in zip(sid_[::-1], self._REV_WEIGHT)))
+        sum_ = sum((SEDOL_CHAR_MAP[c] * w for (c, w) in zip(sid_[::-1], self._REV_WEIGHT)))
         check_sum = (10 - sum_ % 10) % 10
         return check_sum

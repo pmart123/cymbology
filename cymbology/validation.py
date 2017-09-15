@@ -69,7 +69,7 @@ class SecurityId(metaclass=ABCMeta):
         return sid_
 
     def __str__(self):
-        return "<security_id %s>" % self.__class__.__name__
+        return "<cymbology %s>" % self.__class__.__name__
 
     def _id_check(self, sid_, offset=0):
 
