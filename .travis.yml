@@ -4,14 +4,9 @@ python:
   - "3.6"
 
 cache:
-  directories:
-    - $HOME/.cache/pip/wheels
-    - $HOME/travis/virtualenv/python3.5.2
+  - pip
 
 install:
-  - pip install --upgrade pip
-  - pip install wheel
-  - pip install -r requirements.txt
   - pip install -r requirements-test.txt
   - pip install codecov
   - python setup.py install
