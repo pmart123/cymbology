@@ -1,5 +1,6 @@
-from security_id.exceptions import (CharacterError, CheckDigitError, CheckSumError,
-                                    LengthError, NullError)
+from cymbology.exceptions import (CharacterError, CheckDigitError, CheckSumError,
+                                  LengthError, NullError)
+
 
 class AlphaNumericIdMixin(object):
     """mixin class for alpha numeric security ids.

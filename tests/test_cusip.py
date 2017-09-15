@@ -1,7 +1,7 @@
 from unittest import TestCase
 import pytest
-from security_id import Cusip, cusip_from_isin
-from security_id.exceptions import CountryCodeError, IdError
+from cymbology import Cusip, cusip_from_isin
+from cymbology.exceptions import CountryCodeError, IdError
 from tests.test_alpha_numeric_id import AlphaNumericIdMixin
 
 
