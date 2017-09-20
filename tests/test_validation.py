@@ -2,9 +2,9 @@ from unittest import TestCase
 
 import pytest
 
-from cymbology.validation import val_check_digit
+from cymbology.validation import val_check_digit, length_error_message
 from cymbology import Isin, Cusip, Sedol
-from cymbology.exceptions import (CharacterError, CheckDigitError, CheckSumError,
+from cymbology.exceptions import (InvalidCharacterError, CheckDigitError, CheckSumError,
                                   CountryCodeError, LengthError, NullError)
 
 
@@ -72,7 +72,7 @@ def test_length_error(obj, input):
 @pytest.mark.parametrize('obj,input',
                          [(Sedol(), '20!6251'), (Isin(), 'ES01@9067019'), (Cusip(), '03783*100')])
 def test_character_error(obj, input):
-    with pytest.raises(CharacterError):
+    with pytest.raises(InvalidCharacterError):
         assert obj.validate(input)
 
 
@@ -155,3 +155,24 @@ class TestValCheckDigit(TestCase):
     def test_val_check_digit(self):
         self.assertEqual(val_check_digit('abc1'), 1)
         self.assertRaises(CheckDigitError, val_check_digit, 'abc')
+
+
+class TestLengthError(TestCase):
+    def test_only_min(self):
+        expected = 'Foo identifier input must at least length 10.'
+        result = length_error_message('Foo', min_length=10)
+
+        self.assertEqual(expected, result)
+
+    def test_only_max(self):
+        expected = 'Foo identifier input must at most length 10.'
+        result = length_error_message('Foo', max_length=10)
+
+        self.assertEqual(expected, result)
+
+    def test_min_and_max(self):
+        expected = ('Foo identifier input must at least length 1,'
+                    ' at most length 3.')
+        result = length_error_message('Foo', min_length=1, max_length=3)
+
+        self.assertEqual(expected, result)

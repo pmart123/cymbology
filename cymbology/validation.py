@@ -3,7 +3,7 @@ from math import isnan
 
 from cymbology.exceptions import (
     IdError, NullError, LengthError,
-    CharacterError, CheckDigitError, CheckSumError
+    InvalidCharacterError, CheckDigitError, CheckSumError
 )
 
 
@@ -39,7 +39,9 @@ class SecurityId(metaclass=ABCMeta):
         if check_sum == check_digit:
             return sid
         else:
-            raise CheckSumError
+            message = 'The check sum, {}, does not equal the check digit {}'
+
+            raise CheckSumError(message.format(check_sum, check_digit))
 
     def is_valid(self, sid):
         """True if sid is valid security id string, else False."""
@@ -57,7 +59,11 @@ class SecurityId(metaclass=ABCMeta):
         try:
             return self._calculate_checksum(sid_)
         except KeyError:
-            raise CharacterError
+            raise InvalidCharacterError(
+                '{} identifier contains invalid characters'.format(
+                    self.__class__.__qualname__
+                )
+            )
 
     @abstractmethod
     def _calculate_checksum(self, sid_):
@@ -77,7 +83,11 @@ class SecurityId(metaclass=ABCMeta):
         null_check(sid_)
 
         if not (self.MIN_LEN - offset) <= len(sid_) <= (self.MAX_LEN - offset):
-            raise LengthError
+            raise LengthError(
+                length_error_message(
+                    self.__class__.__qualname__, self.MIN_LEN, self.MAX_LEN
+                )
+            )
 
         self._additional_checks(sid_)
 
@@ -88,14 +98,31 @@ class SecurityId(metaclass=ABCMeta):
 def null_check(sid):
     """Check if id string is null."""
 
-    if sid is None or sid is "" or (isinstance(sid, float) and isnan(sid)):
+    if not sid or (isinstance(sid, float) and isnan(sid)):
         raise NullError
 
 
 def val_check_digit(sid):
-    """checks if check digit can convert to integer"""
+    """checks if check digit can convert to integer."""
 
     try:
         return int(sid[-1])
     except ValueError:
         raise CheckDigitError
+
+
+def length_error_message(identifier, min_length=None, max_length=None):
+    """Build length error message."""
+
+    additional = []
+
+    if min_length:
+        additional.append('at least length {}'.format(min_length))
+
+    if max_length:
+        additional.append('at most length {}'.format(max_length))
+
+    body = ', '.join(additional)
+    message = '{} identifier input must {}.'.format(identifier, body)
+
+    return message
