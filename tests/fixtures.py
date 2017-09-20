@@ -1,4 +1,4 @@
-from cymbology.exceptions import (CharacterError, CheckDigitError, CheckSumError,
+from cymbology.exceptions import (InvalidCharacterError, CheckDigitError, CheckSumError,
                                   LengthError, NullError)
 
 
@@ -33,7 +33,7 @@ class AlphaNumericIdMixin(object):
     def test_character_error(self):
         for val in self.character_issue:
             with self.subTest(val=val):
-                self.assertRaises(CharacterError, self.obj.validate, val)
+                self.assertRaises(InvalidCharacterError, self.obj.validate, val)
 
     def test_checkdigit_error(self):
         for val in self.check_digit_issue:
