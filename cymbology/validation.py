@@ -108,7 +108,9 @@ def val_check_digit(sid):
     try:
         return int(sid[-1])
     except ValueError:
-        raise CheckDigitError
+        raise CheckDigitError(
+            "The identifier's check digit must be an integer."
+        )
 
 
 def length_error_message(identifier, min_length=None, max_length=None):
