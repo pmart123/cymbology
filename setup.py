@@ -54,5 +54,6 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     long_description=get_read_me('README.md'),
+    long_description_content_type='text/markdown',
     zip_safe=False
 )
